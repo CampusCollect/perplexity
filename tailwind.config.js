@@ -1,26 +1,41 @@
-/** @type {import('tailwindcss').Config} */
+import tokens from './src/styles/tokens.json' with { type: 'json' };
+
+const spacingScale = tokens.spacing.reduce((acc, value) => {
+  acc[value] = `${value}px`;
+  return acc;
+}, /** @type {Record<string, string>} */ ({}));
+
+const [radiusSm, radiusMd, radiusLg, radiusXl] = tokens.radii;
+
 export default {
-  darkMode: 'class',
-  content: ['./index.html', './src/**/*.{ts,tsx,js,jsx}'],
+  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
     extend: {
       colors: {
-        background: '#0F1113',
-        surface: '#15191D',
-        muted: '#1E2328',
-        accent: '#3EB0F1',
-        success: '#3FD2A9',
-        warning: '#F7C948',
-        danger: '#F0616D',
-        textPrimary: '#E6EDF3',
-        textSecondary: '#94A3B8',
+        background: tokens.colors.bg,
+        surface: tokens.colors.surface,
+        overlay: tokens.colors.overlay,
+        primary: tokens.colors.primary,
+        success: tokens.colors.success,
+        warning: tokens.colors.warning,
+        danger: tokens.colors.danger,
+        text: {
+          primary: tokens.colors.textPrimary,
+          secondary: tokens.colors.textSecondary,
+        },
+        border: tokens.colors.border,
       },
       fontFamily: {
-        sans: ['Inter', 'sans-serif'],
-        display: ['Poppins', 'sans-serif'],
+        heading: [`${tokens.fonts.heading}`, 'sans-serif'],
+        body: [`${tokens.fonts.body}`, 'sans-serif'],
       },
-      boxShadow: {
-        glow: '0 20px 45px rgba(62, 176, 241, 0.2)',
+      spacing: spacingScale,
+      borderRadius: {
+        sm: `${radiusSm}px`,
+        md: `${radiusMd}px`,
+        lg: `${radiusLg}px`,
+        xl: `${radiusXl}px`,
+        full: '9999px',
       },
     },
   },

@@ -4,51 +4,29 @@
 
 :root {
   color-scheme: dark;
+  --color-bg: #0F1113;
+  --color-surface: #15181C;
+  --color-overlay: #1B2026;
+  --color-text-primary: #E6EDF3;
+  --color-text-secondary: #B8C0CC;
+  --color-border: #232B36;
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background-color: var(--color-bg);
+  color: var(--color-text-primary);
+}
+
+html,
+body,
+#root {
+  height: 100%;
 }
 
 body {
   margin: 0;
-  font-family: theme('fontFamily.sans');
-  background-color: #0f1113;
-  color: #e6edf3;
-  min-height: 100vh;
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
+  background-color: var(--color-bg);
+  color: var(--color-text-primary);
 }
 
-*, *::before, *::after {
+* {
   box-sizing: border-box;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-::selection {
-  background: #3eb0f1;
-  color: #0f1113;
-}
-
-::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
-}
-
-::-webkit-scrollbar-track {
-  background: #15191d;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #2a3036;
-  border-radius: 9999px;
-  border: 2px solid #15191d;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #3eb0f1;
-}
-
-#root {
-  min-height: 100vh;
 }

@@ -1,23 +1,31 @@
-export interface BudgetBreakdown {
-  model: string;
-  amount: number;
-  color: string;
+export interface BudgetTrack {
+  id: string;
+  name: string;
+  allocation: number;
+  utilized: number;
+  owner: string;
 }
 
-export interface BudgetSummary {
-  cap: number;
-  used: number;
-  breakdown: BudgetBreakdown[];
-}
-
-export const budgetSummary: BudgetSummary = {
-  cap: 60000,
-  used: 42850,
-  breakdown: [
-    { model: 'OpenAI GPT-4o', amount: 18200, color: '#3EB0F1' },
-    { model: 'OpenAI GPT-4o mini', amount: 9200, color: '#8B5CF6' },
-    { model: 'Anthropic Claude 3 Opus', amount: 7600, color: '#22D3EE' },
-    { model: 'Anthropic Claude 3 Haiku', amount: 5600, color: '#F472B6' },
-    { model: 'Azure Cognitive Search', amount: 3250, color: '#FB923C' },
-  ],
-};
+export const budgets: BudgetTrack[] = [
+  {
+    id: 'budget-strategic',
+    name: 'Strategic Initiatives',
+    allocation: 500000,
+    utilized: 0.62,
+    owner: 'Executive Ops',
+  },
+  {
+    id: 'budget-automation',
+    name: 'Automation R&D',
+    allocation: 300000,
+    utilized: 0.48,
+    owner: 'Automation Guild',
+  },
+  {
+    id: 'budget-creative',
+    name: 'Creative Innovation',
+    allocation: 180000,
+    utilized: 0.73,
+    owner: 'Creative Studio',
+  },
+];

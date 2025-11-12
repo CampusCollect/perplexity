@@ -1,79 +1,83 @@
-# Perplexity Command Deck
+# Agentic Business Studio (Codex)
 
-Perplexity Command Deck is a premium agentic operations workspace that ships with reusable UI modules, a command-focused home page, and a dark themed layout shell. It is built with React, TypeScript, Tailwind CSS, Zustand, and Vite.
-
-## Getting Started
-
-```bash
-npm install
-npm run dev
-```
-
-Navigate to [http://localhost:5173/home](http://localhost:5173/home) to experience the Command Deck.
-
-### Available Scripts
-
-- `npm run dev` – start the Vite dev server.
-- `npm run build` – type-check the project and create an optimized production build.
-- `npm run preview` – locally preview the production build.
-- `npm run lint` – run ESLint over all TypeScript and TSX files.
+Agentic Business Studio is a production-ready Vite + React (TypeScript) scaffold for building an AI-native operating system. It ships with routing, global state, query caching, design tokens, and a dark-themed application shell that models the core product areas of the platform.
 
 ## Features
 
-- **Reusable UI Kit** – KPI heroes, risk alerts, agent and connector cards, run timeline, budget bar, templates, and mode switcher.
-- **Adaptive Layout** – Fixed left navigation, responsive top bar, keyboard shortcuts, and global dark theme.
-- **Command Deck Modes** – Executive, Operator, Analyst, and Creative modes with tailored widgets and mock data.
-- **Mock Data Layer** – Opinionated dataset powering KPIs, alerts, agents, connectors, budgets, and creative schedules.
-- **State Persistence** – Mode selection persisted via Zustand middleware.
+- ⚡️ Vite + React + TypeScript foundation with path aliases (`@/`)
+- 🎯 Structured feature modules (onboarding, command deck, connectors, agents, flows, runs, governance, templates, settings)
+- 🧠 Global mode store powered by Zustand with Executive, Operator, Analyst, and Creative modes
+- 🔌 React Router, TanStack Query, and XYFlow integrations ready for data-driven experiences
+- 🎨 Tailwind CSS configured with custom design tokens and shadcn/ui primitives (button, input, select, card, dialog, tabs, table)
+- 🧰 Mock data stores for agents, connectors, runs, budgets, and templates to accelerate UI prototyping
+- ⌨️ Keyboard shortcuts for navigation (`/`, `G`, `A`, `C`) and an accessible command palette dialog
 
-## Tech Stack
+## Getting started
 
-- React 19 + TypeScript
-- Vite 7
-- Tailwind CSS 3
-- Zustand
-- Recharts
-- Lucide Icons
+### Prerequisites
 
-## Project Structure
+- Node.js 18+
+- npm 10+
+
+### Install dependencies
+
+```bash
+npm install
+```
+
+### Run the development server
+
+```bash
+npm run dev
+```
+
+Open [http://localhost:5173](http://localhost:5173) in your browser to view the application shell.
+
+### Build for production
+
+```bash
+npm run build
+```
+
+### Preview the production build
+
+```bash
+npm run preview
+```
+
+## Project structure
 
 ```
 src/
-  components/
-    layout/        # Application shell, navigation, top bar, keyboard shortcuts
-    ui/            # Reusable business components
-  features/
-    home/          # CommandDeck surface by operating mode
-  lib/
-    mock/          # Mock data sources feeding the dashboards
-  stores/          # Global state stores (mode persistence)
-  routes/          # Shared page helpers and placeholders
+├── components/
+│   ├── layout/
+│   └── ui/
+├── features/
+│   ├── onboarding/
+│   ├── home/
+│   ├── connectors/
+│   ├── agents/
+│   ├── flows/
+│   ├── runs/
+│   ├── governance/
+│   ├── templates/
+│   └── settings/
+├── lib/
+│   ├── api/
+│   ├── auth/
+│   ├── events/
+│   ├── mock/
+│   └── store/
+└── styles/
+    └── tokens.json
 ```
 
-## Keyboard Shortcuts
+Each feature folder contains page-level components that are wired into the central router (`src/App.tsx`). Mock data lives under `src/lib/mock` and is intended to be replaced with live data sources as your integration work progresses.
 
-- `/` – Focus global search
-- `G` – Jump to Governance
-- `A` – Jump to Agents
-- `C` – Jump to Connectors
-- `Cmd/Ctrl + K` – Open the command palette (focus search input)
+## Tailwind design tokens
 
-## Styling
+Design tokens are defined in `src/styles/tokens.json` and automatically loaded into `tailwind.config.js`. Update this file to adjust color, spacing, or typography scales consistently across the interface.
 
-The app embraces a dark, cinematic aesthetic (background `#0F1113`) and uses Poppins for display typography with Inter for body copy. Scrollbars, selections, and interactive states are themed to accent color `#3EB0F1`.
+---
 
-## Mock Data Sources
-
-Mock data lives under `src/lib/mock` and includes:
-
-- `alerts.ts` – risk and opportunity alerts
-- `agents.ts` – top performing agents with budget stats
-- `connectors.ts` – data source health metadata
-- `dashboard.ts` – KPI values, activity feed, analyst metrics, creative schedule
-- `budgets.ts` – spend caps and model breakdown
-
-These mocks power all four command deck modes.
-
-## License
-
-MIT
+This scaffold is the starting point for Agentic Business Studio – extend it with domain-specific APIs, agent orchestration logic, and governance workflows as you move into subsequent phases.

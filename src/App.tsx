@@ -1,23 +1,38 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
-import { AppShell } from '@/components/layout/AppShell';
-import { CommandDeck } from '@/features/home/CommandDeck';
-import { Placeholder } from '@/routes/Placeholder';
 
-const App = () => {
+import { AppLayout } from '@/components/layout/AppLayout';
+import { AgentDetailPage } from '@/features/agents/AgentDetailPage';
+import { ConnectorsPage } from '@/features/connectors/ConnectorsPage';
+import { FlowDetailPage } from '@/features/flows/FlowDetailPage';
+import { GovernancePage } from '@/features/governance/GovernancePage';
+import { HomePage } from '@/features/home/HomePage';
+import { OnboardingPage } from '@/features/onboarding/OnboardingPage';
+import { RunDetailPage } from '@/features/runs/RunDetailPage';
+import { SettingsPage } from '@/features/settings/SettingsPage';
+import { TemplatesPage } from '@/features/templates/TemplatesPage';
+import { AGENT_DEFAULT_ID } from '@/lib/mock/agents';
+
+function App() {
   return (
-    <AppShell>
-      <Routes>
-        <Route path="/" element={<Navigate to="/home" replace />} />
-        <Route path="/home" element={<CommandDeck />} />
-        <Route path="/connectors" element={<Placeholder title="Connectors" description="Manage and monitor all enterprise integrations." />} />
-        <Route path="/agents" element={<Placeholder title="Agents" description="Create, monitor, and optimize your autonomous teams." />} />
-        <Route path="/flows" element={<Placeholder title="Flows" description="Design orchestrations and human-in-the-loop workflows." />} />
-        <Route path="/governance" element={<Placeholder title="Governance" description="Set policy, compliance guardrails, and audit your AI fabric." />} />
-        <Route path="/templates" element={<Placeholder title="Templates" description="Jumpstart automation with curated playbooks and best practices." />} />
-        <Route path="*" element={<Placeholder title="404" description="We couldn't find that view. Choose another destination from the left navigation." />} />
-      </Routes>
-    </AppShell>
+    <Routes>
+      <Route path="/" element={<AppLayout />}>
+        <Route index element={<Navigate to="/home" replace />} />
+        <Route path="onboarding" element={<OnboardingPage />} />
+        <Route path="home" element={<HomePage />} />
+        <Route path="connectors" element={<ConnectorsPage />} />
+        <Route path="agents">
+          <Route index element={<Navigate to={`/agents/${AGENT_DEFAULT_ID}`} replace />} />
+          <Route path=":id" element={<AgentDetailPage />} />
+        </Route>
+        <Route path="flows/:id" element={<FlowDetailPage />} />
+        <Route path="runs/:id" element={<RunDetailPage />} />
+        <Route path="governance" element={<GovernancePage />} />
+        <Route path="templates" element={<TemplatesPage />} />
+        <Route path="settings" element={<SettingsPage />} />
+        <Route path="*" element={<Navigate to="/home" replace />} />
+      </Route>
+    </Routes>
   );
-};
+}
 
 export default App;

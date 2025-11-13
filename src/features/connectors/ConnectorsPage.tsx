@@ -1,8 +1,34 @@
+import { ErrorState } from '@/components/status/ErrorState';
+import { LoadingState } from '@/components/status/LoadingState';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { connectors } from '@/lib/mock/connectors';
+import { useConnectors } from '@/lib/api';
 
 export function ConnectorsPage() {
+  const { data, isLoading, isError, refetch } = useConnectors();
+
+  if (isLoading) {
+    return (
+      <div className="flex min-h-[240px] items-center justify-center">
+        <LoadingState message="Syncing connector catalog" />
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="flex min-h-[240px] items-center justify-center">
+        <ErrorState
+          title="Connectors are unavailable"
+          description="We could not retrieve integration metadata. Please retry or check the observability dashboard."
+          onRetry={() => {
+            void refetch();
+          }}
+        />
+      </div>
+    );
+  }
+
   return (
     <Card>
       <CardHeader>
@@ -21,7 +47,7 @@ export function ConnectorsPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {connectors.map((connector) => (
+            {data?.map((connector) => (
               <TableRow key={connector.id}>
                 <TableCell className="text-text-primary">{connector.name}</TableCell>
                 <TableCell className="capitalize">{connector.type}</TableCell>

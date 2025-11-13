@@ -1,20 +1,59 @@
-import { useMemo } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { agents } from '@/lib/mock/agents';
-import { budgets } from '@/lib/mock/budgets';
-import { connectors } from '@/lib/mock/connectors';
-import { runs } from '@/lib/mock/runs';
+import { ErrorState } from '@/components/status/ErrorState';
+import { LoadingState } from '@/components/status/LoadingState';
+import { useAgents, useBudgets, useConnectors, useRuns } from '@/lib/api';
 
 export function HomePage() {
-  const budgetProgress = useMemo(
-    () =>
-      budgets.map((budget) => ({
-        ...budget,
-        percentage: Math.round(budget.utilized * 100),
-      })),
-    [],
-  );
+  const {
+    data: agents,
+    isLoading: agentsLoading,
+    isError: isAgentError,
+    refetch: refetchAgents,
+  } = useAgents();
+  const {
+    data: connectors,
+    isLoading: connectorsLoading,
+    isError: isConnectorError,
+    refetch: refetchConnectors,
+  } = useConnectors();
+  const { data: runs, isLoading: runsLoading, isError: isRunError, refetch: refetchRuns } = useRuns();
+  const {
+    data: budgets,
+    isLoading: budgetsLoading,
+    isError: isBudgetError,
+    refetch: refetchBudgets,
+  } = useBudgets();
+
+  const isLoading = agentsLoading || connectorsLoading || runsLoading || budgetsLoading;
+  const hasError = isAgentError || isConnectorError || isRunError || isBudgetError;
+
+  if (isLoading) {
+    return (
+      <div className="flex min-h-[320px] items-center justify-center">
+        <LoadingState message="Syncing live telemetry" />
+      </div>
+    );
+  }
+
+  if (hasError) {
+    return (
+      <div className="flex min-h-[320px] items-center justify-center">
+        <ErrorState
+          title="We couldn't load your command deck"
+          description="Check network connectivity or refresh to retry the latest executive metrics."
+          onRetry={() => {
+            void Promise.all([refetchAgents(), refetchConnectors(), refetchRuns(), refetchBudgets()]);
+          }}
+        />
+      </div>
+    );
+  }
+
+  const budgetProgress = budgets?.map((budget) => ({
+    ...budget,
+    percentage: Math.round(budget.utilized * 100),
+  })) ?? [];
 
   return (
     <div className="grid grid-cols-1 gap-6 xl:grid-cols-[2fr_1fr]">
@@ -27,15 +66,17 @@ export function HomePage() {
           <CardContent className="grid gap-4 md:grid-cols-2">
             <div className="rounded-lg border border-border bg-overlay p-4">
               <p className="text-sm text-text-secondary">Active agents</p>
-              <p className="mt-2 text-2xl font-semibold text-text-primary">{agents.length}</p>
+              <p className="mt-2 text-2xl font-semibold text-text-primary">{agents?.length ?? 0}</p>
             </div>
             <div className="rounded-lg border border-border bg-overlay p-4">
               <p className="text-sm text-text-secondary">Connected systems</p>
-              <p className="mt-2 text-2xl font-semibold text-text-primary">{connectors.length}</p>
+              <p className="mt-2 text-2xl font-semibold text-text-primary">{connectors?.length ?? 0}</p>
             </div>
             <div className="rounded-lg border border-border bg-overlay p-4">
               <p className="text-sm text-text-secondary">Active runs</p>
-              <p className="mt-2 text-2xl font-semibold text-text-primary">{runs.filter((run) => run.status === 'running').length}</p>
+              <p className="mt-2 text-2xl font-semibold text-text-primary">
+                {runs?.filter((run) => run.status === 'running').length ?? 0}
+              </p>
             </div>
             <div className="rounded-lg border border-border bg-overlay p-4">
               <p className="text-sm text-text-secondary">Avg. automation duration</p>
@@ -56,16 +97,16 @@ export function HomePage() {
                   <TableHead>Run</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead>Owner</TableHead>
-                  <TableHead>Duration</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {runs.map((run) => (
-                  <TableRow key={run.id}>
-                    <TableCell className="text-text-primary">{run.name}</TableCell>
-                    <TableCell className="capitalize">{run.status}</TableCell>
-                    <TableCell>{run.owner}</TableCell>
-                    <TableCell>{run.duration}</TableCell>
+              <TableHead>Duration</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {runs?.map((run) => (
+              <TableRow key={run.id}>
+                <TableCell className="text-text-primary">{run.name}</TableCell>
+                <TableCell className="capitalize">{run.status}</TableCell>
+                <TableCell>{run.owner}</TableCell>
+                <TableCell>{run.duration}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -104,7 +145,7 @@ export function HomePage() {
             <CardDescription>Ensure mission-critical systems stay synchronized.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
-            {connectors.map((connector) => (
+            {connectors?.map((connector) => (
               <div key={connector.id} className="flex items-center justify-between rounded-md border border-border bg-overlay px-3 py-2 text-sm">
                 <div>
                   <p className="font-medium text-text-primary">{connector.name}</p>

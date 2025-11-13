@@ -5,15 +5,21 @@ import { BrowserRouter } from 'react-router-dom';
 
 import App from './App';
 import './index.css';
+import { AppProviders } from './AppProviders';
+import { AppErrorBoundary } from '@/components/feedback/AppErrorBoundary';
 
 const queryClient = new QueryClient();
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
-    </QueryClientProvider>
+    <AppErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <AppProviders>
+          <BrowserRouter>
+            <App />
+          </BrowserRouter>
+        </AppProviders>
+      </QueryClientProvider>
+    </AppErrorBoundary>
   </StrictMode>,
 );

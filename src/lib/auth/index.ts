@@ -1,2 +1,1 @@
-// Placeholder for authentication helpers, token management, and user session logic.
-export {};
+export { SessionProvider, useSession } from '@/lib/auth/session';

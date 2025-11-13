@@ -22,12 +22,8 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useRuns, useAgents } from '@/lib/api';
 import { MODES, type OperatingMode, useModeStore } from '@/lib/store/modeStore';
-import { AGENT_DEFAULT_ID } from '@/lib/mock/agents';
-import { runs } from '@/lib/mock/runs';
-
-const DEFAULT_FLOW_ID = runs[0]?.flowId ?? 'flow-orbit';
-const DEFAULT_RUN_ID = runs[0]?.id ?? 'run-4821';
 
 type NavItem = {
   label: string;
@@ -41,20 +37,27 @@ export function AppLayout() {
   const [isCommandOpen, setCommandOpen] = useState(false);
   const [commandQuery, setCommandQuery] = useState('');
   const { mode, setMode } = useModeStore();
+  const { data: agents } = useAgents();
+  const { data: runs } = useRuns();
+
+  const defaultAgentId = agents?.[0]?.id ?? 'agent-overview';
+  const defaultRun = runs?.[0];
+  const defaultFlowId = defaultRun?.flowId ?? 'flow-overview';
+  const defaultRunId = defaultRun?.id ?? 'run-overview';
 
   const navItems: NavItem[] = useMemo(
     () => [
       { label: 'Onboarding', to: '/onboarding', icon: Sparkles },
       { label: 'Command Deck', to: '/home', icon: LayoutDashboard },
       { label: 'Connectors', to: '/connectors', icon: Plug },
-      { label: 'Agents', to: `/agents/${AGENT_DEFAULT_ID}`, icon: Bot },
-      { label: 'Flows', to: `/flows/${DEFAULT_FLOW_ID}`, icon: Workflow },
-      { label: 'Runs', to: `/runs/${DEFAULT_RUN_ID}`, icon: Activity },
+      { label: 'Agents', to: `/agents/${defaultAgentId}`, icon: Bot },
+      { label: 'Flows', to: `/flows/${defaultFlowId}`, icon: Workflow },
+      { label: 'Runs', to: `/runs/${defaultRunId}`, icon: Activity },
       { label: 'Governance', to: '/governance', icon: ShieldCheck },
       { label: 'Templates', to: '/templates', icon: ScrollText },
       { label: 'Settings', to: '/settings', icon: Settings },
     ],
-    [],
+    [defaultAgentId, defaultFlowId, defaultRunId],
   );
 
   useEffect(() => {
@@ -76,7 +79,7 @@ export function AppLayout() {
 
       if (event.key.toLowerCase() === 'a') {
         event.preventDefault();
-        navigate(`/agents/${AGENT_DEFAULT_ID}`);
+        navigate(`/agents/${defaultAgentId}`);
       }
 
       if (event.key.toLowerCase() === 'c') {
@@ -87,7 +90,7 @@ export function AppLayout() {
 
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
-  }, [navigate]);
+  }, [defaultAgentId, navigate]);
 
   useEffect(() => {
     setCommandOpen(false);

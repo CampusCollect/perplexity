@@ -1,10 +1,36 @@
 import { useParams } from 'react-router-dom';
+import { ErrorState } from '@/components/status/ErrorState';
+import { LoadingState } from '@/components/status/LoadingState';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { runs } from '@/lib/mock/runs';
+import { useRuns } from '@/lib/api';
 
 export function RunDetailPage() {
   const { id } = useParams();
-  const run = runs.find((item) => item.id === id);
+  const { data, isLoading, isError, refetch } = useRuns();
+
+  if (isLoading) {
+    return (
+      <div className="flex min-h-[240px] items-center justify-center">
+        <LoadingState message="Loading run telemetry" />
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="flex min-h-[240px] items-center justify-center">
+        <ErrorState
+          title="Run diagnostics unavailable"
+          description="We could not retrieve orchestration details. Retry to rehydrate live telemetry."
+          onRetry={() => {
+            void refetch();
+          }}
+        />
+      </div>
+    );
+  }
+
+  const run = data?.find((item) => item.id === id);
 
   if (!run) {
     return (

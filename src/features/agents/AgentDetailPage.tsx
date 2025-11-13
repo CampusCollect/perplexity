@@ -1,12 +1,36 @@
-import { useMemo } from 'react';
 import { useParams } from 'react-router-dom';
+import { ErrorState } from '@/components/status/ErrorState';
+import { LoadingState } from '@/components/status/LoadingState';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { agents } from '@/lib/mock/agents';
+import { useAgents } from '@/lib/api';
 
 export function AgentDetailPage() {
   const { id } = useParams();
+  const { data, isLoading, isError, refetch } = useAgents();
 
-  const agent = useMemo(() => agents.find((item) => item.id === id), [id]);
+  if (isLoading) {
+    return (
+      <div className="flex min-h-[240px] items-center justify-center">
+        <LoadingState message="Fetching agent record" />
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="flex min-h-[240px] items-center justify-center">
+        <ErrorState
+          title="Agents are temporarily unavailable"
+          description="We couldn't retrieve the agent roster. Please retry once connectivity stabilizes."
+          onRetry={() => {
+            void refetch();
+          }}
+        />
+      </div>
+    );
+  }
+
+  const agent = data?.find((item) => item.id === id);
 
   if (!agent) {
     return (

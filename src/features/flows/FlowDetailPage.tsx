@@ -1,6 +1,8 @@
 import { useParams } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { runs } from '@/lib/mock/runs';
+import { ErrorState } from '@/components/status/ErrorState';
+import { LoadingState } from '@/components/status/LoadingState';
+import { useRuns } from '@/lib/api';
 
 const flowDescriptions: Record<string, string> = {
   'flow-orbit': 'Synthesizes executive intelligence from market, finance, and product signals.',
@@ -10,8 +12,31 @@ const flowDescriptions: Record<string, string> = {
 
 export function FlowDetailPage() {
   const { id } = useParams();
-  const relatedRuns = runs.filter((run) => run.flowId === id);
+  const { data, isLoading, isError, refetch } = useRuns();
+  const relatedRuns = data?.filter((run) => run.flowId === id) ?? [];
   const description = (id && flowDescriptions[id]) || 'Flow definition coming soon. Configure steps and agents to begin orchestration.';
+
+  if (isLoading) {
+    return (
+      <div className="flex min-h-[240px] items-center justify-center">
+        <LoadingState message="Loading flow analytics" />
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="flex min-h-[240px] items-center justify-center">
+        <ErrorState
+          title="Flow insights unavailable"
+          description="We could not retrieve orchestration telemetry. Retry or inspect the pipeline status."
+          onRetry={() => {
+            void refetch();
+          }}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">

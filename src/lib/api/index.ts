@@ -1,2 +1,3 @@
-// Placeholder for API client utilities. Implement HTTP clients, React Query hooks, and mutation helpers here.
-export {};
+export { useAgents, useBudgets, useConnectors, useRuns, useTemplates } from '@/lib/api/hooks';
+export { queryKeys } from '@/lib/api/queryKeys';
+export { httpClient } from '@/lib/api/httpClient';

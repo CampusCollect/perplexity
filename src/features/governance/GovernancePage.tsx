@@ -1,9 +1,38 @@
+import { ErrorState } from '@/components/status/ErrorState';
+import { LoadingState } from '@/components/status/LoadingState';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { agents } from '@/lib/mock/agents';
-import { budgets } from '@/lib/mock/budgets';
+import { useAgents, useBudgets } from '@/lib/api';
 
 export function GovernancePage() {
+  const { data: agents, isLoading: agentsLoading, isError: agentError, refetch: refetchAgents } = useAgents();
+  const { data: budgets, isLoading: budgetsLoading, isError: budgetError, refetch: refetchBudgets } = useBudgets();
+
+  const isLoading = agentsLoading || budgetsLoading;
+  const hasError = agentError || budgetError;
+
+  if (isLoading) {
+    return (
+      <div className="flex min-h-[240px] items-center justify-center">
+        <LoadingState message="Loading governance data" />
+      </div>
+    );
+  }
+
+  if (hasError) {
+    return (
+      <div className="flex min-h-[240px] items-center justify-center">
+        <ErrorState
+          title="Governance view unavailable"
+          description="Telemetry for policy owners and budgets could not be retrieved. Retry after verifying integrations."
+          onRetry={() => {
+            void Promise.all([refetchAgents(), refetchBudgets()]);
+          }}
+        />
+      </div>
+    );
+  }
+
   return (
     <div className="grid gap-6 lg:grid-cols-2">
       <Card>
@@ -20,8 +49,8 @@ export function GovernancePage() {
                 <TableHead>Status</TableHead>
               </TableRow>
             </TableHeader>
-            <TableBody>
-              {agents.map((agent) => (
+          <TableBody>
+              {agents?.map((agent) => (
                 <TableRow key={agent.id}>
                   <TableCell className="text-text-primary">{agent.name}</TableCell>
                   <TableCell>{agent.owner}</TableCell>
@@ -39,7 +68,7 @@ export function GovernancePage() {
           <CardDescription>Allocation vs. utilization across strategic envelopes.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-3 text-sm text-text-secondary">
-          {budgets.map((budget) => (
+          {budgets?.map((budget) => (
             <div key={budget.id} className="rounded-md border border-border bg-overlay px-4 py-3">
               <div className="flex items-center justify-between text-text-primary">
                 <span>{budget.name}</span>

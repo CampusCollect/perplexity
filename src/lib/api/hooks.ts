@@ -1,7 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
 
 import { queryKeys } from '@/lib/api/queryKeys';
-import { getAgents, getBudgets, getConnectors, getRuns, getTemplates, useResourceLogger } from '@/lib/api/resources';
+import { getAgents, getBudgets, getConnectors, getDashboard, getRuns, getTemplates, useResourceLogger } from '@/lib/api/resources';
+import type { DashboardData } from '@/lib/mock/dashboard';
 
 export function useAgents() {
   const { logError } = useResourceLogger();
@@ -72,6 +73,21 @@ export function useTemplates() {
         return await getTemplates();
       } catch (error) {
         logError('Failed to load templates', { error });
+        throw error;
+      }
+    },
+  });
+}
+
+export function useDashboard() {
+  const { logError } = useResourceLogger();
+  return useQuery<DashboardData>({
+    queryKey: queryKeys.dashboard,
+    queryFn: async () => {
+      try {
+        return await getDashboard();
+      } catch (error) {
+        logError('Failed to load dashboard', { error });
         throw error;
       }
     },

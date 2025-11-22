@@ -4,4 +4,5 @@ export const queryKeys = {
   runs: ['runs'] as const,
   budgets: ['budgets'] as const,
   templates: ['templates'] as const,
+  dashboard: ['dashboard'] as const,
 };

@@ -6,6 +6,7 @@ import { budgets } from '@/lib/mock/budgets';
 import { connectors } from '@/lib/mock/connectors';
 import { runs } from '@/lib/mock/runs';
 import { templates } from '@/lib/mock/templates';
+import { dashboardData, type DashboardData } from '@/lib/mock/dashboard';
 import type { BudgetEnvelope, Connector, RunSummary, TemplateSummary } from '@/lib/types';
 import type { AgentSummary } from '@/lib/types';
 import { httpClient } from '@/lib/api/httpClient';
@@ -62,6 +63,15 @@ export async function getTemplates(): Promise<TemplateSummary[]> {
   }
 
   return fetchCollection<TemplateSummary[]>('/templates', templateSchema);
+}
+
+export async function getDashboard(): Promise<DashboardData> {
+  if (appConfig.apiBaseUrl === 'mock') {
+    return useMockData(dashboardData);
+  }
+
+  const raw = await httpClient.get<unknown>('/dashboard');
+  return raw as DashboardData;
 }
 
 export function useResourceLogger() {
